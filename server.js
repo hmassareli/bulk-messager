@@ -34,19 +34,17 @@ fastify.register(require("@fastify/static"), {
 // Formbody lets us parse incoming forms
 fastify.register(require("@fastify/formbody"));
 
-
 fastify.get("/qr", async function (request, reply) {
   const headers = {
-'Content-Type': 'text/event-stream',
-Connection: 'keep-alive',
-'Cache-Control': 'no-cache'
-};
-reply.raw.writeHead(200, headers);
-  
+    "Content-Type": "text/event-stream",
+    Connection: "keep-alive",
+    "Cache-Control": "no-cache",
+  };
+  reply.raw.writeHead(200, headers);
 
   try {
     let qr = await new Promise((resolve, reject) => {
-      client.once("qr", (qr) => {
+      client.on("qr", (qr) => {
         resolve(qr);
         console.log("qr created: " + qr);
       });
@@ -55,16 +53,16 @@ reply.raw.writeHead(200, headers);
         reject(new Error("QR event wasn't emitted in 60 seconds."));
       }, 60000);
     });
-    reply.raw.write(`data: ${JSON.stringify({ type: 'qr', qrCode: qr })}\n\n`);
+    reply.raw.write(`data: ${JSON.stringify({ type: "qr", qrCode: qr })}\n\n`);
   } catch (err) {
     reply.send(err.message);
   }
   client.on("ready", () => {
-    console.log("client is ready!!")
-    reply.raw.write(`data: ${JSON.stringify({ type: 'ready' })}\n\n`);
+    console.log("client is ready!!");
+    reply.raw.writeHead(200, headers);
+    reply.raw.write(`data: ${JSON.stringify({ type: "ready" })}\n\n`);
   });
-})
-
+});
 
 // Run the server and report out to the logs
 fastify.listen(
