@@ -45,7 +45,7 @@
                   ${validatedNumbers.map((number) => html`
                     <${NumberTag} key=${number} number=${number} />
                     `
-                  ))}
+                  )}
                 </div>
               ` : html`
                 <textarea
@@ -102,7 +102,7 @@
 
               return html`
 
-                ${!isReady ? html`<div id="qrcode"></div>` : null }
+                ${isReady ? html`<div id="qrcode"></div>` : html`<${BulkMessager} />` }
               `;
             }
 
