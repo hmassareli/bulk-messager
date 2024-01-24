@@ -16,28 +16,28 @@
 
     <script type="module">
       import { render } from "preact";
-      import { useReducer, useEffect } from "preact/hooks";
+      import { useReducer, useEffect, useState } from "preact/hooks";
       import { html } from "htm/preact";
 
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
-        const [isReady, setIsReady] 
+        const [isReady, setIsReady] = useState(false);
         useEffect(() => {
           const eventSource = new EventSource("/qr");
           eventSource.onmessage = (event) => {
             const eventData = JSON.parse(event.data);
-            
+
             if(eventData.type === "qr"){
               const qrDiv = document.getElementById("qrcode");
               qrDiv.innerHTML = ""
-              
+
               new QRCode(
               qrDiv,
               eventData.qrCode
             );
             }
-            
-            
+
+
             console.log("Received", eventData);
             // Handle the incoming event data
           };
@@ -50,7 +50,8 @@
         // Handle incoming events
 
         return html`
-          <div id="qrcode"></div>
+
+          ${!isReady ? html`<div id="qrcode"></div>` : null}
         `;
       }
 
@@ -58,7 +59,6 @@
     </script>
   </head>
   <body>
-    
     Opa
   </body>
 </html>
