@@ -61,7 +61,7 @@ reply.raw.writeHead(200, headers);
   }
   client.on("ready", () => {
     console.log("client is ready!!")
-    reply.send("ready!");
+    reply.raw.write(`data: ${JSON.stringify({ type: 'ready' })}\n\n`);
   });
 })
 
