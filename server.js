@@ -95,7 +95,10 @@ fastify.get("/qr", async function (request, reply) {
   } catch (err) {
     reply.send(err.message);
   }
-
+  client.on("ready", () => {
+    console.log("client is ready!!")
+    reply.send("ready!");
+  });
   // Aqui você pode criar o objeto JSON que deseja retornar
 
   // Usando reply.send() para enviar o JSON como resposta
