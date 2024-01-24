@@ -15,7 +15,13 @@
     </script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script type="module">
       import { render } from "preact";
       import { useReducer, useEffect, useState } from "preact/hooks";
@@ -59,10 +65,8 @@
                   <div
                     className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full relative"
                   >
-                    <p
-                      onClick=${() => setIsEditing(true)}
-                      className="absolute top-4 right-2 hover:cursor-pointer"
-                    ></p>
+                  <i onClick=${() => setIsEditing(true)} class='fas fa-edit absolute top-4 right-2 hover:cursor-pointer'></i>
+                   
 
                     ${validatedNumbers.map(
                       (number) => html`
@@ -131,6 +135,5 @@
     </script>
   </head>
   <body>
-    Opa
   </body>
 </html>
