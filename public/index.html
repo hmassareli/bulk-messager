@@ -13,13 +13,52 @@
       }
     </script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-
+    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
       import { render } from "preact";
       import { useReducer, useEffect, useState } from "preact/hooks";
       import { html } from "htm/preact";
       
-      export function 
+      export function BulkMessager() {
+        return html`
+          <div className="flex w-full p-10 flex-col items-start">
+        <p className="text-large text-left font-semibold">Disparo de mensagens em massa</p>
+        <p className="text-left">Insira as informações necessárias e clique em enviar mensagens</p>
+
+        <p className="text-base mt-4 font-semibold">Destinatários</p>
+        ${validatedNumbers && !isEditing ? html`
+          <div className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full relative">
+            <Edit
+              onClick={(): void => setIsEditing(true)}
+              className="absolute top-4 right-2 hover:cursor-pointer"
+            />
+
+            {validatedNumbers.map((number) => (
+              <NumberTag key={number} number={number} />
+            ))}
+          </div>
+        ` : html`
+          <Textarea
+            onChange={(e): void => {
+              setNumbersString(e.target.value)
+            }}
+            value={numbersString}
+            className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full"
+            size={'md'}
+            placeholder="Números de whats app para enviar sua mensagem"
+          />
+        `}
+
+        <Button
+          onClick={onValidateNumbers}
+          className="bg-green hover:bg-greenDark text-white px-6 py-3 rounded-lg mt-4 font-semibold"
+        >
+          Validar números
+        </Button>
+      </div>
+        
+        `
+      }
 
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
@@ -55,7 +94,7 @@
 
         return html`
 
-          ${!isReady ? html`<div id="qrcode"></div>` : }
+          ${!isReady ? html`<div id="qrcode"></div>` : null }
         `;
       }
 
