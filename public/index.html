@@ -65,8 +65,10 @@
                   <div
                     className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full relative"
                   >
-                  <i onClick=${() => setIsEditing(true)} class='fas fa-edit absolute top-4 right-2 hover:cursor-pointer'></i>
-                   
+                    <i
+                      onClick=${() => setIsEditing(true)}
+                      class="fas fa-edit absolute top-4 right-2 hover:cursor-pointer"
+                    ></i>
 
                     ${validatedNumbers.map(
                       (number) => html`
@@ -126,14 +128,12 @@
         }, []);
         // Handle incoming events
 
-        return html`
-          ${isReady ? html`<div id="qrcode"></div>` : html`<${BulkMessager} />`}
-        `;
+        return html` <div id="qrcode"></div>
+          <${BulkMessager}  />`;
       }
 
       render(html`<${App} />`, document.body);
     </script>
   </head>
-  <body>
-  </body>
+  <body></body>
 </html>
