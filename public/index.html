@@ -17,34 +17,36 @@
     </script>
 
     <script type="module">
-        import { render } from "preact";
-        import { useReducer, useEffect } from "preact/hooks";
-        import { html } from "htm/preact";
-        
+      import { render } from "preact";
+      import { useReducer, useEffect } from "preact/hooks";
+      import { html } from "htm/preact";
 
-        export function App() {
-          const [count, add] = useReducer((a, b) => a + b, 0);
+      export function App() {
+        const [count, add] = useReducer((a, b) => a + b, 0);
 
-      useEffect(()=>{
-        const eventSource = new EventSource("/qr");
-        eventSource.onmessage = (event) => {
-          console.log("chegou" + event)
-          const eventData = JSON.parse(event.data);
+       useEffect(() => {
+          const eventSource = new EventSource("/qr");
+          eventSource.onmessage = (event) => {
+            const eventData = JSON.parse(event.data);
+            console.log("Received", eventData);
+            // Handle the incoming event data
+          };
 
-          // Check the type of event
-          console.log(eventData)
-        };
-      },[])
+          return () => {
+            // Cleanup when component unmounts
+            eventSource.close();
+          };
+        }, []);
         // Handle incoming events
 
-          return html`
-            <button onClick=${() => add(-1)}>Decrement</button>
-            <input readonly size="4" value=${count} />
-            <button onClick=${() => add(1)}>Increment</button>
-          `;
-        }
+        return html`
+          <button onClick=${() => add(-1)}>Decrement</button>
+          <input readonly size="4" value=${count} />
+          <button onClick=${() => add(1)}>Increment</button>
+        `;
+      }
 
-        render(html`<${App} />`, document.body);
+      render(html`<${App} />`, document.body);
     </script>
     Opa
   </body>
