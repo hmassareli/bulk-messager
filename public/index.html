@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>title</title>
+</head>
+<body>
+  <script type="importmap">
+  {
+    "imports": {
+      "preact": "https://esm.sh/preact@10.19.2",
+      "preact/": "https://esm.sh/preact@10.19.2/",
+      "htm/preact": "https://esm.sh/htm@3.1.1/preact?external=preact",
+      "axios": "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import { render } from 'preact';
+  import { useReducer } from 'preact/hooks';
+  import { html } from 'htm/preact';
+  import {}
+
+  export function App() {
+    const [count, add] = useReducer((a, b) => a + b, 0);
+
+    return html`
+      <button onClick=${() => add(-1)}>Decrement</button>
+      <input readonly size="4" value=${count} />
+      <button onClick=${() => add(1)}>Increment</button>
+    `;
+  }
+
+  render(html`<${App} />`, document.body);
+</script>
+Opa
+</body>
+</html>

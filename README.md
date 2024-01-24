@@ -22,8 +22,6 @@ You'll get best use out of this project if you're familiar with basic JavaScript
 
 ← `src/`: This folder holds the site template along with some basic data files.
 
-← `src/pages/index.hbs`: This is the main page template for your site. The template receives parameters from the server script, which it includes in the page HTML. The page sends the user submitted color value in the body of a request, or as a query parameter to choose a random color.
-
 ← `src/colors.json`: A collection of CSS color names. We use this in the server script to pick a random color, and to match searches against color names.
 
 ← `src/seo.json`: When you're ready to share your new site or add a custom domain, change SEO/meta settings in here.
