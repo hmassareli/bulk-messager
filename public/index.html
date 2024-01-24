@@ -11,7 +11,7 @@
           "preact": "https://esm.sh/preact@10.19.2",
           "preact/": "https://esm.sh/preact@10.19.2/",
           "htm/preact": "https://esm.sh/htm@3.1.1/preact?external=preact",
-          "axios": "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+          "QRCode": "https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"
         }
       }
     </script>
@@ -20,6 +20,7 @@
       import { render } from "preact";
       import { useReducer, useEffect } from "preact/hooks";
       import { html } from "htm/preact";
+      import QRCode from "QRCode";
 
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
