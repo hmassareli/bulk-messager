@@ -11,6 +11,8 @@ const client = new Client({
   authStrategy: new LocalAuth({ clientId: "bot-zdg" }),
 });
 
+var qr;
+
 
 
 const path = require("path");
@@ -77,27 +79,37 @@ fastify.get("/", function (request, reply) {
 fastify.get("/qr", async function (request, reply) {
   
   try {
-        let qr = await new Promise((resolve, reject) => {
-            client.once('qr', (qr) => resolve(qr))
-            setTimeout(() => {
-                reject(new Error("QR event wasn't emitted in 15 seconds."))
-            }, 100000)
+        reply.send("qr started");
+    
+        qr = await new Promise((resolve, reject) => {
+            client.once('qr', (qr) => {
+              console.log(qr);
+              resolve(qr); 
+            })
         })
-        reply.send(qr);
+        
+        console.log("qr initializing");
     } catch (err) {
        reply.send(err.message)
     }
   
   // Aqui você pode criar o objeto JSON que deseja retornar
-  const jsonData = {
-    message: "Esta é uma resposta JSON de uma rota GET.",
-    timestamp: Date.now()
-  };
+  
 
   // Usando reply.send() para enviar o JSON como resposta
   
 });
 
+fastify.get("/getqr", async function (request, reply) {
+  if(!qr){
+    reply.send("ainda não");
+  } else {
+    reply.send("aqui está" + qr)
+  }
+  
+
+  
+});
 
 /**
  * Our POST route to handle and react to form submissions
