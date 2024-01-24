@@ -21,7 +21,7 @@
 
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
-
+        const [isReady, setIsReady] 
         useEffect(() => {
           const eventSource = new EventSource("/qr");
           eventSource.onmessage = (event) => {
@@ -50,9 +50,7 @@
         // Handle incoming events
 
         return html`
-          <button onClick=${() => add(-1)}>Decrement</button>
-          <input readonly size="4" value=${count} />
-          <button onClick=${() => add(1)}>Increment</button>
+          <div id="qrcode"></div>
         `;
       }
 
@@ -60,7 +58,7 @@
     </script>
   </head>
   <body>
-    <div id="qrcode"></div>
+    
     Opa
   </body>
 </html>
