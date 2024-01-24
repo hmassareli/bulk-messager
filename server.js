@@ -8,7 +8,6 @@ const qrcode = require("qrcode-terminal");
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const sendMessages = require("./src/sendMessages");
 const client = new Client({
-  authStrategy: new LocalAuth({ clientId: "bot-zdg" }),
   puppeteer: {
     headless: true,
     args: ["--no-sandbox"],
@@ -44,22 +43,26 @@ fastify.get("/qr", async function (request, reply) {
 
   try {
     let qr = await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error("QR event wasn't emitted in 60 seconds."));
+      }, 60000);
+      
       client.on("qr", (qr) => {
         resolve(qr);
         console.log("qr created: " + qr);
+        
+        clearTimeout(timeout)
+        
       });
 
-      setTimeout(() => {
-        reject(new Error("QR event wasn't emitted in 60 seconds."));
-      }, 60000);
+      
     });
     reply.raw.write(`data: ${JSON.stringify({ type: "qr", qrCode: qr })}\n\n`);
   } catch (err) {
-    reply.send(err.message);
+    reply.raw.write(`data: ${JSON.stringify({ type: "error" })}\n\n`);
   }
   client.on("ready", () => {
     console.log("client is ready!!");
-    reply.raw.writeHead(200, headers);
     reply.raw.write(`data: ${JSON.stringify({ type: "ready" })}\n\n`);
   });
 });

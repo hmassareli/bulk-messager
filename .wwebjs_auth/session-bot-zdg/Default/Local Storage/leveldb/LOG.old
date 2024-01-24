@@ -1,3 +1,3 @@
-2024/01/24-18:26:30.926 885 Reusing MANIFEST /app/.wwebjs_auth/session-bot-zdg/Default/Local Storage/leveldb/MANIFEST-000001
-2024/01/24-18:26:30.926 885 Recovering log #4
-2024/01/24-18:26:30.926 885 Reusing old log /app/.wwebjs_auth/session-bot-zdg/Default/Local Storage/leveldb/000004.log 
+2024/01/24-18:38:13.658 11fc Reusing MANIFEST /app/.wwebjs_auth/session-bot-zdg/Default/Local Storage/leveldb/MANIFEST-000001
+2024/01/24-18:38:13.740 11fc Recovering log #4
+2024/01/24-18:38:13.747 11fc Reusing old log /app/.wwebjs_auth/session-bot-zdg/Default/Local Storage/leveldb/000004.log 
