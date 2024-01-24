@@ -36,9 +36,13 @@ fastify.register(require("@fastify/formbody"));
 
 
 fastify.get("/qr", async function (request, reply) {
-  reply.header("Content-Type", "text/event-stream");
-  reply.header("Cache-Control", "no-cache");
-  reply.header("Connection", "keep-alive");
+  const headers = {
+'Content-Type': 'text/event-stream',
+Connection: 'keep-alive',
+'Cache-Control': 'no-cache'
+};
+reply.raw.writeHead(200, headers);
+  
 
   try {
     let qr = await new Promise((resolve, reject) => {
@@ -51,7 +55,7 @@ fastify.get("/qr", async function (request, reply) {
         reject(new Error("QR event wasn't emitted in 60 seconds."));
       }, 60000);
     });
-    reply.send(qr);
+    reply.raw.write(`data: ${JSON.stringify({ type: 'qr', qrCode: qr })}\n\n`);
   } catch (err) {
     reply.send(err.message);
   }
