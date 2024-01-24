@@ -10,12 +10,10 @@ const sendMessages = require("./src/sendMessages");
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: "bot-zdg" }),
   puppeteer: {
-        headless: true,
-        args: ['--no-sandbox']
-    }
+    headless: true,
+    args: ["--no-sandbox"],
+  },
 });
-
-
 
 const path = require("path");
 
@@ -77,37 +75,31 @@ fastify.get("/", function (request, reply) {
   return reply.view("/src/pages/index.hbs", params);
 });
 
-
 fastify.get("/qr", async function (request, reply) {
-  
+  reply.header("Content-Type", "text/event-stream");
+  reply.header("Cache-Control", "no-cache");
+  reply.header("Connection", "keep-alive");
+
   try {
-        let qr = await new Promise((resolve, reject) => {
-            client.once('qr', (qr) => {
-              resolve(qr);
-              console.log("qr created: " + qr);
-              
-            })
-            
-            setTimeout(() => {
-                reject(new Error("QR event wasn't emitted in 60 seconds."))
-            }, 60000)
-        })
-         reply.send(qr)
-       
-        
-        
-    } catch (err) {
-       reply.send(err.message)
-    }
-  
+    let qr = await new Promise((resolve, reject) => {
+      client.once("qr", (qr) => {
+        resolve(qr);
+        console.log("qr created: " + qr);
+      });
+
+      setTimeout(() => {
+        reject(new Error("QR event wasn't emitted in 60 seconds."));
+      }, 60000);
+    });
+    reply.send(qr);
+  } catch (err) {
+    reply.send(err.message);
+  }
+
   // Aqui você pode criar o objeto JSON que deseja retornar
-  
 
   // Usando reply.send() para enviar o JSON como resposta
-  
 });
-
-
 
 /**
  * Our POST route to handle and react to form submissions
