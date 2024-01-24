@@ -1,2 +1,3 @@
-2024/01/24-01:55:55.229 1f45 Creating DB /app/.wwebjs_auth/session-bot-zdg/Default/Session Storage since it was missing.
-2024/01/24-01:55:55.239 1f45 Reusing MANIFEST /app/.wwebjs_auth/session-bot-zdg/Default/Session Storage/MANIFEST-000001
+2024/01/24-02:30:14.086 327d Reusing MANIFEST /app/.wwebjs_auth/session-bot-zdg/Default/Session Storage/MANIFEST-000001
+2024/01/24-02:30:14.087 327d Recovering log #3
+2024/01/24-02:30:14.087 327d Reusing old log /app/.wwebjs_auth/session-bot-zdg/Default/Session Storage/000003.log 

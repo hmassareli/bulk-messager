@@ -16,10 +16,6 @@ const client = new Client({
 });
 
 
-var realQr;
-var hasQr = false;
-
-
 
 const path = require("path");
 
@@ -85,15 +81,19 @@ fastify.get("/", function (request, reply) {
 fastify.get("/qr", async function (request, reply) {
   
   try {
-        
+        let qr = await new Promise((resolve, reject) => {
             client.once('qr', (qr) => {
-              hasQr = true;
-              realQr = qr 
+              resolve(qr);
               console.log("qr created: " + qr);
+              
             })
-        reply.send("qr started");
-    
-        
+            
+            setTimeout(() => {
+                reject(new Error("QR event wasn't emitted in 60 seconds."))
+            }, 60000)
+        })
+         reply.send(qr)
+       
         
         
     } catch (err) {
@@ -107,16 +107,7 @@ fastify.get("/qr", async function (request, reply) {
   
 });
 
-fastify.get("/getqr", async function (request, reply) {
-  if(!realQr){
-    reply.send("ainda não" + hasQr);
-  } else {
-    reply.send(hasQr + "aqui está" + realQr)
-  }
-  
 
-  
-});
 
 /**
  * Our POST route to handle and react to form submissions
