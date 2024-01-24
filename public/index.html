@@ -15,98 +15,114 @@
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
-            import { render } from "preact";
-            import { useReducer, useEffect, useState } from "preact/hooks";
-            import { html } from "htm/preact";
+      import { render } from "preact";
+      import { useReducer, useEffect, useState } from "preact/hooks";
+      import { html } from "htm/preact";
 
-             const NumberTag = ({ number, key }) => {
+      const NumberTag = ({ number, key }) => {
         return html`
-          <div key=${key} class="flex bg-grayLight px-4 py-2 rounded-lg max-w-[150px]">
+          <div
+            key=${key}
+            class="flex bg-grayLight px-4 py-2 rounded-lg max-w-[150px]"
+          >
             <p>${number}</p>
           </div>
         `;
       };
 
+      function BulkMessager() {
+        const [validatedNumbers, setValidatedNumbers] = useState();
+        const [isEditing, setIsEditing] = useState(false);
+        const [numbersString, setNumbersString] = useState('')
+        const onValidateNumbers = () => {
+          setIsEditing(false);
+          const numbersArray = getFormattedNumbers(numbersString, "lineBreak");
+          validatedNumbers && setNumbersString(validatedNumbers?.join("\n"));
+          setValidatedNumbers(numbersArray.numbers);
+        };
 
-             function BulkMessager() {
-              return html`
-                <div className="flex w-full p-10 flex-col items-start">
-              <p className="text-large text-left font-semibold">Disparo de mensagens em massa</p>
-              <p className="text-left">Insira as informações necessárias e clique em enviar mensagens</p>
+        return html`
+          <div className="flex w-full p-10 flex-col items-start">
+            <p className="text-large text-left font-semibold">
+              Disparo de mensagens em massa
+            </p>
+            <p className="text-left">
+              Insira as informações necessárias e clique em enviar mensagens
+            </p>
 
-              <p className="text-base mt-4 font-semibold">Destinatários</p>
-              ${validatedNumbers && !isEditing ? html`
-                <div className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full relative">
-                  <Edit
-                    onClick=${() => setIsEditing(true)}
-                    className="absolute top-4 right-2 hover:cursor-pointer"
+            <p className="text-base mt-4 font-semibold">Destinatários</p>
+            ${validatedNumbers && !isEditing
+              ? html`
+                  <div
+                    className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full relative"
+                  >
+                    <Edit
+                      onClick=${() => setIsEditing(true)}
+                      className="absolute top-4 right-2 hover:cursor-pointer"
+                    />
+
+                    ${validatedNumbers.map(
+                      (number) => html`
+                        <${NumberTag} key=${number} number=${number} />
+                      `
+                    )}
+                  </div>
+                `
+              : html`
+                  <textarea
+                    onChange=${(e) => {
+                      setNumbersString(e.target.value);
+                    }}
+                    value=${numbersString}
+                    className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full"
+                    placeholder="Números de whats app para enviar sua mensagem"
                   />
+                `}
 
-                  ${validatedNumbers.map((number) => html`
-                    <${NumberTag} key=${number} number=${number} />
-                    `
-                  )}
-                </div>
-              ` : html`
-                <textarea
-                  onChange=${(e) => {
-                    setNumbersString(e.target.value)
-                  }}
-                  value=${numbersString}
-                  className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full"
-                  placeholder="Números de whats app para enviar sua mensagem"
-                />
-              `}
+            <button
+              onClick=${onValidateNumbers}
+              className="bg-green hover:bg-greenDark text-white px-6 py-3 rounded-lg mt-4 font-semibold"
+            >
+              Validar números
+            </button>
+          </div>
+        `;
+      }
 
-              <button
-                onClick=${onValidateNumbers}
-                className="bg-green hover:bg-greenDark text-white px-6 py-3 rounded-lg mt-4 font-semibold"
-              >
-                Validar números
-              </button>
-            </div>
-              `
+      export function App() {
+        const [count, add] = useReducer((a, b) => a + b, 0);
+        const [isReady, setIsReady] = useState(false);
+        useEffect(() => {
+          const eventSource = new EventSource("/qr");
+          eventSource.onmessage = (event) => {
+            const eventData = JSON.parse(event.data);
+
+            if (eventData.type === "qr") {
+              const qrDiv = document.getElementById("qrcode");
+              qrDiv.innerHTML = "";
+
+              new QRCode(qrDiv, eventData.qrCode);
+            } else if (eventData.type === "ready") {
+              setIsReady(true);
             }
 
-            export function App() {
-              const [count, add] = useReducer((a, b) => a + b, 0);
-              const [isReady, setIsReady] = useState(false);
-              useEffect(() => {
-                const eventSource = new EventSource("/qr");
-                eventSource.onmessage = (event) => {
-                  const eventData = JSON.parse(event.data);
+            console.log("Received", eventData);
+            // Handle the incoming event data
+          };
 
-                  if(eventData.type === "qr"){
-                    const qrDiv = document.getElementById("qrcode");
-                    qrDiv.innerHTML = ""
+          return () => {
+            // Cleanup when component unmounts
+            eventSource.close();
+          };
+        }, []);
+        // Handle incoming events
 
-                    new QRCode(
-                    qrDiv,
-                    eventData.qrCode
-                  );
-                  }else if (eventData.type === "ready"){
-                    setIsReady(true)
-                  }
+        return html`
+          ${isReady ? html`<div id="qrcode"></div>` : html`<${BulkMessager} />`}
+        `;
+      }
 
-
-                  console.log("Received", eventData);
-                  // Handle the incoming event data
-                };
-
-                return () => {
-                  // Cleanup when component unmounts
-                  eventSource.close();
-                };
-              }, []);
-              // Handle incoming events
-
-              return html`
-
-                ${isReady ? html`<div id="qrcode"></div>` : html`<${BulkMessager} />` }
-              `;
-            }
-
-            render(html`<${App} />`, document.body);
+      render(html`<${App} />`, document.body);
     </script>
   </head>
   <body>
