@@ -51,7 +51,7 @@ fastify.get("/qr", async function (request, reply) {
         reject(new Error("QR event wasn't emitted in 60 seconds."));
       }, 60000);
     });
-    reply.send(qr);
+    reply.raw.write(`data: ${JSON.stringify({ type: 'qr', qrCode: qr })}\n\n`);
   } catch (err) {
     reply.send(err.message);
   }

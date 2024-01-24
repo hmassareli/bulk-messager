@@ -1,39 +1,51 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title>title</title>
-</head>
-<body>
-  <script type="importmap">
-  {
-    "imports": {
-      "preact": "https://esm.sh/preact@10.19.2",
-      "preact/": "https://esm.sh/preact@10.19.2/",
-      "htm/preact": "https://esm.sh/htm@3.1.1/preact?external=preact",
-      "axios": "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
-    }
-  }
-</script>
+  </head>
+  <body>
+    <script type="importmap">
+      {
+        "imports": {
+          "preact": "https://esm.sh/preact@10.19.2",
+          "preact/": "https://esm.sh/preact@10.19.2/",
+          "htm/preact": "https://esm.sh/htm@3.1.1/preact?external=preact",
+          "axios": "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+        }
+      }
+    </script>
 
-<script type="module">
-  import { render } from 'preact';
-  import { useReducer } from 'preact/hooks';
-  import { html } from 'htm/preact';
-  import {}
+    <script type="module">
+        import { render } from "preact";
+        import { useReducer, useEffect } from "preact/hooks";
+        import { html } from "htm/preact";
+        
 
-  export function App() {
-    const [count, add] = useReducer((a, b) => a + b, 0);
+        export function App() {
+          const [count, add] = useReducer((a, b) => a + b, 0);
 
-    return html`
-      <button onClick=${() => add(-1)}>Decrement</button>
-      <input readonly size="4" value=${count} />
-      <button onClick=${() => add(1)}>Increment</button>
-    `;
-  }
+      useEffect(()=>{
+        const eventSource = new EventSource("/qr");
+        eventSource.onmessage = (event) => {
+          console.log("chegou" + event)
+          const eventData = JSON.parse(event.data);
 
-  render(html`<${App} />`, document.body);
-</script>
-Opa
-</body>
+          // Check the type of event
+          console.log(eventData)
+        };
+      },[])
+        // Handle incoming events
+
+          return html`
+            <button onClick=${() => add(-1)}>Decrement</button>
+            <input readonly size="4" value=${count} />
+            <button onClick=${() => add(1)}>Increment</button>
+          `;
+        }
+
+        render(html`<${App} />`, document.body);
+    </script>
+    Opa
+  </body>
 </html>
