@@ -18,6 +18,8 @@
       import { render } from "preact";
       import { useReducer, useEffect, useState } from "preact/hooks";
       import { html } from "htm/preact";
+      
+      export function 
 
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
@@ -35,6 +37,8 @@
               qrDiv,
               eventData.qrCode
             );
+            }else if (eventData.type === "ready"){
+              setIsReady(true)
             }
 
 
@@ -51,7 +55,7 @@
 
         return html`
 
-          ${!isReady ? html`<div id="qrcode"></div>` : null}
+          ${!isReady ? html`<div id="qrcode"></div>` : }
         `;
       }
 
