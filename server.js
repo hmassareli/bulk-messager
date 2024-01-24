@@ -9,9 +9,15 @@ const { Client, LocalAuth } = require("whatsapp-web.js");
 const sendMessages = require("./src/sendMessages");
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: "bot-zdg" }),
+  puppeteer: {
+        headless: true,
+        args: ['--no-sandbox']
+    }
 });
 
-var qr;
+
+var realQr;
+var hasQr = false;
 
 
 
@@ -79,16 +85,17 @@ fastify.get("/", function (request, reply) {
 fastify.get("/qr", async function (request, reply) {
   
   try {
+        
+            client.once('qr', (qr) => {
+              hasQr = true;
+              realQr = qr 
+              console.log("qr created: " + qr);
+            })
         reply.send("qr started");
     
-        qr = await new Promise((resolve, reject) => {
-            client.once('qr', (qr) => {
-              console.log(qr);
-              resolve(qr); 
-            })
-        })
         
-        console.log("qr initializing");
+        
+        
     } catch (err) {
        reply.send(err.message)
     }
@@ -101,10 +108,10 @@ fastify.get("/qr", async function (request, reply) {
 });
 
 fastify.get("/getqr", async function (request, reply) {
-  if(!qr){
-    reply.send("ainda não");
+  if(!realQr){
+    reply.send("ainda não" + hasQr);
   } else {
-    reply.send("aqui está" + qr)
+    reply.send(hasQr + "aqui está" + realQr)
   }
   
 
@@ -165,3 +172,5 @@ fastify.listen(
     console.log(`Your app is listening on ${address}`);
   }
 );
+
+client.initialize();
