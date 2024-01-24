@@ -3,6 +3,16 @@
  * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
  */
 
+const qrcode = require("qrcode-terminal");
+
+const { Client, LocalAuth } = require("whatsapp-web.js");
+const sendMessages = require("./src/sendMessages");
+const client = new Client({
+  authStrategy: new LocalAuth({ clientId: "bot-zdg" }),
+});
+
+
+
 const path = require("path");
 
 // Require the fastify framework and instantiate it
@@ -62,6 +72,32 @@ fastify.get("/", function (request, reply) {
   // The Handlebars code will be able to access the parameter values and build them into the page
   return reply.view("/src/pages/index.hbs", params);
 });
+
+
+fastify.get("/qr", async function (request, reply) {
+  
+  try {
+        let qr = await new Promise((resolve, reject) => {
+            client.once('qr', (qr) => resolve(qr))
+            setTimeout(() => {
+                reject(new Error("QR event wasn't emitted in 15 seconds."))
+            }, 100000)
+        })
+        reply.send(qr);
+    } catch (err) {
+       reply.send(err.message)
+    }
+  
+  // Aqui você pode criar o objeto JSON que deseja retornar
+  const jsonData = {
+    message: "Esta é uma resposta JSON de uma rota GET.",
+    timestamp: Date.now()
+  };
+
+  // Usando reply.send() para enviar o JSON como resposta
+  
+});
+
 
 /**
  * Our POST route to handle and react to form submissions
