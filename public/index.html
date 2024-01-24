@@ -3,8 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>title</title>
-  </head>
-  <body>
     <script type="importmap">
       {
         "imports": {
@@ -20,7 +18,7 @@
       import { render } from "preact";
       import { useReducer, useEffect } from "preact/hooks";
       import { html } from "htm/preact";
-      import QRCode from "QRCode";
+      import {QRCode} from "QRCode";
 
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
@@ -49,6 +47,9 @@
 
       render(html`<${App} />`, document.body);
     </script>
+  </head>
+  <body>
+    
     Opa
   </body>
 </html>
