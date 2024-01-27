@@ -56,6 +56,11 @@ fastify.get("/qr", async function (request, reply) {
     reply.raw.write(`data: ${JSON.stringify({ type: "error" })}\n\n`);
   }
   
+  client.on("authenticated", () => {
+    console.log("Client is authenticated");
+    reply.raw.write(`data: ${JSON.stringify({ type: "anthenticated" })}\n\n`);
+  });
+  
   client.on("ready", () => {
     console.log("client is ready!!");
     reply.raw.write(`data: ${JSON.stringify({ type: "ready" })}\n\n`);
