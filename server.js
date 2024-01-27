@@ -42,9 +42,7 @@ fastify.get("/qr", async function (request, reply) {
   reply.raw.writeHead(200, headers);
 
   try {
-      const timeout = setTimeout(() => {
-        throw new Error("QR event wasn't emitted in 60 seconds.");
-      }, 60000);
+      
 
       client.on("qr", (qr) => {
         reply.raw.write(
@@ -53,11 +51,11 @@ fastify.get("/qr", async function (request, reply) {
 
         console.log("qr created: " + qr);
 
-        clearTimeout(timeout);
       });
   } catch (err) {
     reply.raw.write(`data: ${JSON.stringify({ type: "error" })}\n\n`);
   }
+  
   client.on("ready", () => {
     console.log("client is ready!!");
     reply.raw.write(`data: ${JSON.stringify({ type: "ready" })}\n\n`);

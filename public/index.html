@@ -22,6 +22,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="stylesheet" href="./style.css">
     <script type="module">
       import { render } from "preact";
       import { useReducer, useEffect, useState } from "preact/hooks";
@@ -39,7 +40,7 @@
         `;
       };
 
-      function BulkMessager() {
+      function BulkMessager({isReady}) {
         const [validatedNumbers, setValidatedNumbers] = useState();
         const [isEditing, setIsEditing] = useState(false);
         const [numbersString, setNumbersString] = useState("");
@@ -51,7 +52,7 @@
         };
 
         return html`
-          <div className="flex w-full p-10 flex-col items-start">
+          <div className="flex w-[800px] m-auto p-10 flex-col ${!isReady ? "hidden" : ""} items-start">
             <p className="text-large text-left font-semibold">
               Disparo de mensagens em massa
             </p>
@@ -101,15 +102,22 @@
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
         const [isReady, setIsReady] = useState(false);
+        
+        
+        
         useEffect(() => {
+          const qrDiv = document.getElementById("qrcode");
+          qrDiv.classList.add("skeleton");
           const eventSource = new EventSource("/qr");
           eventSource.onmessage = (event) => {
             const eventData = JSON.parse(event.data);
 
             if (eventData.type === "qr") {
-              const qrDiv = document.getElementById("qrcode");
+              
               if (qrDiv) {
                 qrDiv.innerHTML = "";
+                
+
               }
               var qrcode = new QRCode(document.getElementById("qrcode"), {
                 text: eventData.qrCode,
@@ -121,6 +129,7 @@
               });
             } else if (eventData.type === "ready") {
               setIsReady(true);
+              qrDiv.classList.add("hidden")
             }
 
             console.log("Received", eventData);
@@ -134,8 +143,8 @@
         }, []);
         // Handle incoming events
 
-        return html` <div id="qrcode"></div>
-          <${BulkMessager} />`;
+        return html` <div id="qrcode" ${isReady? "hidden" : ""}><p>Carregando QR Code...</p></div>
+          <${BulkMessager} isReady=${isReady} />`;
       }
 
       render(html`<${App} />`, document.body);
