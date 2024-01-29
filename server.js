@@ -35,7 +35,7 @@ fastify.register(require("@fastify/formbody"));
 
 const animalBodyJsonSchema = {
     type: 'object',
-    required: ['animal'],
+    required: ['message'],
     properties: {
       animal: { type: 'string' },
     },
