@@ -60,8 +60,6 @@ fastify.get("/qr", async function (request, reply) {
   },
 });
   
-  clientQueue.push()
-  
   
   const headers = {
     "Content-Type": "text/event-stream",
@@ -91,8 +89,14 @@ fastify.get("/qr", async function (request, reply) {
   });
   
   client.on("ready", () => {
+  const clientId = crypto.randomUUID();
+    
+  clientQueue.push({id: clientId, client})
+    
+    
+    
     console.log("client is ready!!");
-    reply.raw.write(`data: ${JSON.stringify({ type: "ready" })}\n\n`);
+    reply.raw.write(`data: ${JSON.stringify({ type: "ready", id: clientId  })}\n\n`);
   });
 });
 
