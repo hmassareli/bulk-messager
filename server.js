@@ -3,7 +3,7 @@
  * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
  */
 
-import crypto from 'crypto'
+const crypto = require('crypto') 
 
 const qrcode = require("qrcode-terminal");
 
@@ -98,6 +98,9 @@ fastify.get("/qr", async function (request, reply) {
     console.log("client is ready!!");
     reply.raw.write(`data: ${JSON.stringify({ type: "ready", id: clientId  })}\n\n`);
   });
+  
+client.initialize();
+  
 });
 
 // Run the server and report out to the logs
@@ -112,4 +115,3 @@ fastify.listen(
   }
 );
 
-client.initialize();
