@@ -33,6 +33,13 @@ fastify.register(require("@fastify/static"), {
 // Formbody lets us parse incoming forms
 fastify.register(require("@fastify/formbody"));
 
+
+fastify.post("bulk-messages", async function (request, reply){
+  
+  reply.send({data: "resposta"})
+  
+})
+
 fastify.get("/qr", async function (request, reply) {
   const headers = {
     "Content-Type": "text/event-stream",
