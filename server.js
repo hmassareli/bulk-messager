@@ -3,16 +3,14 @@
  * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
  */
 
+import crypto from 'crypto'
+
 const qrcode = require("qrcode-terminal");
 
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const sendMessages = require("./src/sendMessages");
-const client = new Client({
-  puppeteer: {
-    headless: true,
-    args: ["--no-sandbox"],
-  },
-});
+
+const clientQueue = [];
 
 const path = require("path");
 
@@ -55,6 +53,16 @@ fastify.post("/bulk-messages", schema, async function (request, reply){
 })
 
 fastify.get("/qr", async function (request, reply) {
+  const client = new Client({
+  puppeteer: {
+    headless: true,
+    args: ["--no-sandbox"],
+  },
+});
+  
+  clientQueue.push()
+  
+  
   const headers = {
     "Content-Type": "text/event-stream",
     Connection: "keep-alive",
