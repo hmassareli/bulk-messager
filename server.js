@@ -33,8 +33,18 @@ fastify.register(require("@fastify/static"), {
 // Formbody lets us parse incoming forms
 fastify.register(require("@fastify/formbody"));
 
+const animalBodyJsonSchema = {
+    type: 'object',
+    required: ['animal'],
+    properties: {
+      animal: { type: 'string' },
+    },
+  }
 
-fastify.post("bulk-messages", async function (request, reply){
+const schema = {
+    body: animalBodyJsonSchema,
+  }
+fastify.post("bulk-messages", schema, async function (request, reply){
   
   reply.send({data: "resposta"})
   
