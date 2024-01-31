@@ -3,7 +3,7 @@
  * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
  */
 
-const crypto = require('crypto') 
+const crypto = require("crypto");
 
 const qrcode = require("qrcode-terminal");
 
@@ -32,35 +32,37 @@ fastify.register(require("@fastify/static"), {
 fastify.register(require("@fastify/formbody"));
 
 const bulkMessagesJsonSchema = {
-  type: 'object',
-  required: ['numbers', 'message'],
+  type: "object",
+  required: ["numbers", "message", "clientId"],
   properties: {
     numbers: {
-      type: 'array',
-      items: { type: 'integer' },
+      type: "array",
+      items: { type: "integer" },
     },
-    message: { type: 'string' },
+    message: { type: "string" },
   },
 };
 
 const schema = {
-    body: bulkMessagesJsonSchema,
+  body: bulkMessagesJsonSchema,
+};
+fastify.post("/bulk-messages", schema, async function (request, reply) {
+  if (request.body) {
+    const { numbers, message, clientId } = request.body;
+    sendMessages(numbers, message, clientQueue[clientId], (res) => {
+      if (res) reply.send({ data: "Opa deu certo!" });
+    });
   }
-fastify.post("/bulk-messages", schema, async function (request, reply){
-  
-  reply.send({data: "resposta"})
-  
-})
+});
 
 fastify.get("/qr", async function (request, reply) {
   const client = new Client({
-  puppeteer: {
-    headless: true,
-    args: ["--no-sandbox"],
-  },
-});
-  
-  
+    puppeteer: {
+      headless: true,
+      args: ["--no-sandbox"],
+    },
+  });
+
   const headers = {
     "Content-Type": "text/event-stream",
     Connection: "keep-alive",
@@ -69,49 +71,41 @@ fastify.get("/qr", async function (request, reply) {
   reply.raw.writeHead(200, headers);
 
   try {
-      
+    client.on("qr", (qr) => {
+      reply.raw.write(
+        `data: ${JSON.stringify({ type: "qr", qrCode: qr })}\n\n`
+      );
 
-      client.on("qr", (qr) => {
-        reply.raw.write(
-          `data: ${JSON.stringify({ type: "qr", qrCode: qr })}\n\n`
-        );
-
-        console.log("qr created: " + qr);
-
-      });
+      console.log("qr created: " + qr);
+    });
   } catch (err) {
     reply.raw.write(`data: ${JSON.stringify({ type: "error" })}\n\n`);
   }
-  
+
   client.on("authenticated", () => {
     console.log("Client is authenticated");
     reply.raw.write(`data: ${JSON.stringify({ type: "anthenticated" })}\n\n`);
   });
-  
+
   client.on("ready", () => {
-  const clientId = crypto.randomUUID();
-    
-  clientQueue.push({id: clientId, client})
-    
-    
-    
+    const clientId = crypto.randomUUID();
+
+    clientQueue[clientId] = client;
+
     console.log("client is ready!!");
-    reply.raw.write(`data: ${JSON.stringify({ type: "ready", id: clientId  })}\n\n`);
+    reply.raw.write(
+      `data: ${JSON.stringify({ type: "ready", id: clientId })}\n\n`
+    );
   });
-  
-client.initialize();
-  
+
+  client.initialize();
 });
 
 // Run the server and report out to the logs
-fastify.listen(
-  { port: process.env.PORT, host: "0.0.0.0" },
-  function (err, address) {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-    console.log(`Your app is listening on ${address}`);
+fastify.listen({ port: 3000, host: "0.0.0.0" }, function (err, address) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
   }
-);
-
+  console.log(`Your app is listening on ${address}`);
+});

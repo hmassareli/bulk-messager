@@ -22,7 +22,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css" />
     <script type="module">
       import { render } from "preact";
       import { useReducer, useEffect, useState } from "preact/hooks";
@@ -40,10 +40,12 @@
         `;
       };
 
-      function BulkMessager({isReady}) {
+      function BulkMessager({ isReady, clientId }) {
         const [validatedNumbers, setValidatedNumbers] = useState();
         const [isEditing, setIsEditing] = useState(false);
         const [numbersString, setNumbersString] = useState("");
+        const [messageToSend, setMessageToSend] = useState("");
+
         const onValidateNumbers = () => {
           setIsEditing(false);
           const numbersArray = getFormattedNumbers(numbersString, "lineBreak");
@@ -51,8 +53,28 @@
           setValidatedNumbers(numbersArray.numbers);
         };
 
+        const onSendMessages = () => {
+          fetch("/bulk-messages", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              numbers: validatedNumbers,
+              message: messageToSend,
+              clientId: clientId,
+            }),
+          }).then((response) =>
+            response.json().then((data) => console.log(data))
+          );
+        };
+
         return html`
-          <div className="flex w-[800px] m-auto p-10 flex-col ${!isReady ? "hidden" : ""} items-start">
+          <div
+            className="flex w-[800px] m-auto p-10 flex-col ${!isReady
+              ? "hidden"
+              : ""} items-start"
+          >
             <p className="text-large text-left font-semibold">
               Disparo de mensagens em massa
             </p>
@@ -95,6 +117,21 @@
             >
               Validar números
             </button>
+
+            ${validatedNumbers && !isEditing
+              ? html`
+                  <textarea onChange=${(e) => setMessageToSend(e.target.value)}>
+                    Mensagem
+                    </textarea
+                  >
+                  <button
+                    onClick=${onSendMessages}
+                    className="bg-green-500 hover:bg-greenDark text-white px-6 py-3 rounded-lg mt-4 font-semibold"
+                  >
+                    Validar números
+                  </button>
+                `
+              : null}
           </div>
         `;
       }
@@ -102,9 +139,8 @@
       export function App() {
         const [count, add] = useReducer((a, b) => a + b, 0);
         const [isReady, setIsReady] = useState(false);
-        
-        
-        
+        const [clientId, setClientId] = useState("");
+
         useEffect(() => {
           const qrDiv = document.getElementById("qrcode");
           qrDiv.classList.add("skeleton");
@@ -113,11 +149,8 @@
             const eventData = JSON.parse(event.data);
 
             if (eventData.type === "qr") {
-              
               if (qrDiv) {
                 qrDiv.innerHTML = "";
-                
-
               }
               var qrcode = new QRCode(document.getElementById("qrcode"), {
                 text: eventData.qrCode,
@@ -129,7 +162,8 @@
               });
             } else if (eventData.type === "ready") {
               setIsReady(true);
-              qrDiv.classList.add("hidden")
+              qrDiv.classList.add("hidden");
+              setClientId(eventData.id);
             }
 
             console.log("Received", eventData);
@@ -143,8 +177,10 @@
         }, []);
         // Handle incoming events
 
-        return html` <div id="qrcode" ${isReady? "hidden" : ""}><p>Carregando QR Code...</p></div>
-          <${BulkMessager} isReady=${isReady} />`;
+        return html` <div id="qrcode" ${isReady ? "hidden" : ""}>
+            <p>Carregando QR Code...</p>
+          </div>
+          <${BulkMessager} isReady=${isReady} clientId=${clientId} />`;
       }
 
       render(html`<${App} />`, document.body);
