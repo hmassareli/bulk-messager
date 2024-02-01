@@ -70,6 +70,11 @@ fastify.get("/qr", async function (request, reply) {
   };
   reply.raw.writeHead(200, headers);
 
+  reply.raw.on("close", () => {
+    console.log("Connection closed");
+    client.destroy();
+  });
+
   try {
     client.on("qr", (qr) => {
       reply.raw.write(
