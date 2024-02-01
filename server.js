@@ -103,7 +103,9 @@ fastify.get("/qr", async function (request, reply) {
     );
   });
 
-  client.initialize();
+  client.initialize().catch((ex) => {
+    console.error("error to be ignored: ", ex);
+  });
 });
 
 // Run the server and report out to the logs
