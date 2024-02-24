@@ -15,13 +15,11 @@
     </script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+    <script
+      src="https://kit.fontawesome.com/b709610c08.js"
       crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    ></script>
+
     <link rel="stylesheet" href="./style.css" />
     <script type="module">
       import { render } from "preact";
@@ -29,30 +27,57 @@
       import { html } from "htm/preact";
       import { getFormattedNumbers } from "phoneNumbers";
 
-      const NumberTag = ({ number, key }) => {
+      const NumberTag = ({ number, key, removeNumber }) => {
         return html`
           <div
             key=${key}
-            class="flex bg-stone-200 px-4 py-2 rounded-lg max-w-[150px]"
+            class="numbertag shadow-md max-h-[40px] py-2 flex bg-stone-200 pl-3 pr-3  rounded-lg max-w-[200px]"
           >
             <p>${number}</p>
+            <i
+              class="fa-solid cursor-pointer fa-x m-auto ml-2 text-[10px]"
+              onClick=${() => removeNumber(number)}
+            ></i>
           </div>
         `;
       };
 
       function BulkMessager({ isReady, clientId }) {
-        const [validatedNumbers, setValidatedNumbers] = useState();
-        const [isEditing, setIsEditing] = useState(false);
+        const [validatedNumbers, setValidatedNumbers] = useState([]);
         const [numbersString, setNumbersString] = useState("");
         const [messageToSend, setMessageToSend] = useState("");
 
-        const onValidateNumbers = () => {
-          setIsEditing(false);
-          const numbersArray = getFormattedNumbers(numbersString, "lineBreak");
-          validatedNumbers && setNumbersString(validatedNumbers?.join("\n"));
-          setValidatedNumbers(numbersArray.numbers);
+        const removeNumber = (number) => {
+          setValidatedNumbers((prev) => prev.filter((num) => num !== number));
         };
-
+        const onNumbersChange = (e) => {
+          setNumbersString(e.target.value);
+          if (
+            e.key == " " ||
+            e.code == "Space" ||
+            e.keyCode == 32 ||
+            e.key == "Enter" ||
+            e.code == "Enter" ||
+            e.keyCode == 13
+          ) {
+            setValidatedNumbers((prev) => [
+              ...prev,
+              ...getFormattedNumbers(numbersString, validatedNumbers).numbers,
+            ]);
+            setNumbersString("");
+          } else if (
+            e.key === "Backspace" ||
+            e.code === "Backspace" ||
+            e.keyCode === 8
+          ) {
+            if (numbersString.length === 0) {
+              setValidatedNumbers((prev) => prev.slice(0, -1));
+            }
+          }
+        };
+        useEffect(() => {
+          console.log(validatedNumbers);
+        });
         const onSendMessages = () => {
           fetch("/bulk-messages", {
             method: "POST",
@@ -71,7 +96,7 @@
 
         return html`
           <div
-            className="flex w-[800px] m-auto p-10 flex-col ${!isReady
+            className="flex w-[800px] m-auto p-10 flex-col ${isReady
               ? "hidden"
               : ""} items-start"
           >
@@ -83,55 +108,38 @@
             </p>
 
             <p className="text-base mt-4 font-semibold">Destinatários</p>
-            ${validatedNumbers && !isEditing
-              ? html`
-                  <div
-                    className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full relative"
-                  >
-                    <i
-                      onClick=${() => setIsEditing(true)}
-                      class="fas fa-edit absolute top-4 right-2 hover:cursor-pointer"
-                    ></i>
 
-                    ${validatedNumbers.map(
-                      (number) => html`
-                        <${NumberTag} key=${number} number=${number} />
-                      `
-                    )}
-                  </div>
-                `
-              : html`
-                  <textarea
-                    onChange=${(e) => {
-                      setNumbersString(e.target.value);
-                    }}
-                    value=${numbersString}
-                    className="border mt-2 border-zinc-400 rounded-md p-2 h-32 max-h-32 w-[720px] max-w-full"
-                    placeholder="Números de whats app para enviar sua mensagem"
-                  />
-                `}
-
-            <button
-              onClick=${onValidateNumbers}
-              className="bg-green-500 hover:bg-greenDark text-white px-6 py-3 rounded-lg mt-4 font-semibold"
+            <div
+              className="w-full h-[200px] overflow-auto flex items-start content-start gap-2 flex-wrap mt-2 input-message rounded-t-lg p-4 border max-w-full"
             >
-              Validar números
+              ${validatedNumbers
+                ? validatedNumbers.map((number, index) => {
+                    return html`<${NumberTag}
+                      removeNumber=${removeNumber}
+                      number=${number}
+                      key=${index}
+                    />`;
+                  })
+                : null}
+              <input
+                type="text"
+                placeholder=${validatedNumbers.length
+                  ? ""
+                  : "Números separados por vários números, espaço ou quebra de linha"}
+                value=${numbersString}
+                onkeyup=${onNumbersChange}
+                className="flex-1 rounded-t-lg p-1 border-0 max-w-full"
+              />
+            </div>
+            <textarea
+              placeholder="Insira a mensagem a ser enviada"
+              className="bg-[#F9F9F9] input-message w-full h-[200px] rounded-b-lg  border-t-0 p-4 border max-w-full"
+            ></textarea>
+            <button
+              className="bg-[#1B965B] ml-auto hover:bg-blueDark text-white px-6 py-3 rounded-lg mt-4 font-semibold"
+            >
+              Enviar para todos
             </button>
-
-            ${validatedNumbers && !isEditing
-              ? html`
-                  <textarea onChange=${(e) => setMessageToSend(e.target.value)}>
-                    Mensagem
-                    </textarea
-                  >
-                  <button
-                    onClick=${onSendMessages}
-                    className="bg-green-500 hover:bg-greenDark text-white px-6 py-3 rounded-lg mt-4 font-semibold"
-                  >
-                    Validar números
-                  </button>
-                `
-              : null}
           </div>
         `;
       }
@@ -180,6 +188,7 @@
         return html` <div id="qrcode" ${isReady ? "hidden" : ""}>
             <p>Carregando QR Code...</p>
           </div>
+
           <${BulkMessager} isReady=${isReady} clientId=${clientId} />`;
       }
 

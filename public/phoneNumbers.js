@@ -4,15 +4,39 @@
  * @param {string[]} numbers - Array of phone numbers to be formatted.
  * @returns {string[]} - Array of formatted phone numbers.
  */
+
+// export const getOnlyTextNodes = (element) => {
+//   let resultText = "";
+//   for (let i = 0; i < element.childNodes.length; i++) {
+//     let node = element.childNodes[i];
+//     // If the node is a text node, append its content
+//     if (node.nodeType === 3) {
+//       // 3 is the node type for text nodes
+//       resultText += node.nodeValue;
+//       //remove the text node
+//       // node.remove();
+//     } else if (!node?.classList.contains("numbertag")) {
+//       resultText += node.textContent;
+//       console.log(node + " " + resultText);
+//       // node.remove();
+//     }
+//   }
+//   // if (element.textContent == "" && element.childNodes[0]) {
+//   //   element.childNodes[0].remove();
+//   // }
+//   return resultText;
+// };
 export const formatNumbers = (numbers) => {
   // Remove non-digit characters
-  const cleanNumbers = numbers.map((n) => {
-    return n.replace(/\D/g, '');
-  });
+  const cleanNumbers = numbers
+    .map((n) => {
+      return n.replace(/\D/g, "");
+    })
+    .filter((n) => n);
 
   // Add '55' country code if not present
   const numbersWithCountryCode = cleanNumbers.map((n) => {
-    if (n.slice(0, 2) === '55') {
+    if (n.slice(0, 2) === "55") {
       return n;
     }
     return `55${n}`;
@@ -27,8 +51,13 @@ export const formatNumbers = (numbers) => {
  * @param {string[]} numbers - Array of phone numbers.
  * @returns {string[]} - Array of unique phone numbers.
  */
-const removeRepeatedNumbers = (numbers) => {
-  const uniqueNumbers = [...new Set(numbers)];
+const removeRepeatedNumbers = (numbers, existingNumbers) => {
+  const numbersWithoutRepeated = numbers.filter((number) => {
+    return !existingNumbers.includes(number);
+  });
+
+  const uniqueNumbers = [...new Set(numbersWithoutRepeated)];
+
   return uniqueNumbers;
 };
 
@@ -39,11 +68,8 @@ const removeRepeatedNumbers = (numbers) => {
  * @param {'comma' | 'lineBreak'} typeOfDivider - Type of divider used in the string ('comma' or 'lineBreak').
  * @returns {string[]} - Array of divided numbers.
  */
-export const divideNumbers = (stringNumbers, typeOfDivider) => {
-  if (typeOfDivider === 'lineBreak') {
-    return stringNumbers.split('\n');
-  }
-  return stringNumbers.split(',');
+export const divideNumbers = (stringNumbers) => {
+  return stringNumbers.split("\n").join(" ").split(",").join(" ").split(" ");
 };
 
 /**
@@ -53,9 +79,18 @@ export const divideNumbers = (stringNumbers, typeOfDivider) => {
  * @param {'comma' | 'lineBreak'} typeOfDivider - Type of divider used in the string ('comma' or 'lineBreak').
  * @returns {{ numbers: string[]; invalidNumbersLength: number }} - Object containing formatted numbers and the count of invalid numbers' length.
  */
-export const getFormattedNumbers = (numbersString, typeOfDivider) => {
-  const numbersArray = divideNumbers(numbersString, typeOfDivider);
-  const result = removeRepeatedNumbers(formatNumbers(numbersArray));
+export const getFormattedNumbers = (numbersString, existingNumbers) => {
+  const cleanNumbers = numbersString.replace(/\D+/g, " ");
+  if (!parseInt(cleanNumbers) || !cleanNumbers)
+    return {
+      numbers: [],
+      invalidNumbersLength: 0,
+    };
+  const numbersArray = divideNumbers(cleanNumbers);
+  const result = removeRepeatedNumbers(
+    formatNumbers(numbersArray),
+    existingNumbers
+  );
   return {
     numbers: result,
     invalidNumbersLength: 0,

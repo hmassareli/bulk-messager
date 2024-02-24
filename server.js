@@ -7,7 +7,7 @@ const crypto = require("crypto");
 
 const qrcode = require("qrcode-terminal");
 
-const { Client, LocalAuth } = require("whatsapp-web.js");
+const { Client } = require("whatsapp-web.js");
 const sendMessages = require("./src/sendMessages");
 
 const clientQueue = [];

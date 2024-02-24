@@ -8,14 +8,15 @@ to this section's matching END comment to see page-specific styles.
 ******************************************************************************/
 /* Our default values set as CSS variables */
 :root {
-  --color-bg: #BDC9FF;
+  --color-bg: #bdc9ff;
   --color-text-main: #000000;
-  --color-primary: #AFECE0;
+  --color-primary: #afece0;
   --wrapper-height: 87vh;
   --image-max-width: 300px;
   --image-margin: 3rem;
   --font-family: "HK Grotesk";
   --font-family-header: "HK Grotesk";
+  --gray: rgba(24, 40, 69, 0.47);
 }
 
 /* Basic page style resets */
@@ -23,32 +24,55 @@ to this section's matching END comment to see page-specific styles.
   box-sizing: border-box;
 }
 
-#qrcode.hidden{
-  display:none ;
+textarea:focus,
+input:focus {
+  outline: 0;
 }
 
-#qrcode{
+*:focus {
+  outline: 0;
+}
+.input-message {
+  border-color: var(--gray);
+  resize: none;
+}
+[contenteditable="true"]:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  color: grey;
+  display: block; /* For Firefox */
+}
+
+#qrcode.hidden {
+  display: none;
+}
+
+#qrcode {
   width: 300px;
-  
-  height:300px;
-  margin:50px auto;
-  display:flex;
+
+  height: 300px;
+  margin: 50px auto;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
-
 .skeleton {
-	background-color: #e2e5e7;
-	background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
-	background-size: 40px 100%; 
-	background-repeat: no-repeat; 
-	background-position: left -40px top 0; 
-	animation: shine 1s ease infinite; 
+  background-color: #e2e5e7;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0)
+  );
+  background-size: 40px 100%;
+  background-repeat: no-repeat;
+  background-position: left -40px top 0;
+  animation: shine 1s ease infinite;
 }
 
 @keyframes shine {
-	to {
-		background-position: right -40px top 0;
-	}
+  to {
+    background-position: right -40px top 0;
+  }
 }
