@@ -35,23 +35,40 @@ input:focus {
 .input-message {
   border-color: var(--gray);
   resize: none;
+  background-color: #f6f6f6;
 }
 [contenteditable="true"]:empty:before {
   content: attr(placeholder);
   pointer-events: none;
   color: grey;
-  display: block; /* For Firefox */
+  display: block;
 }
 
 #qrcode.hidden {
   display: none;
 }
+input {
+  background-color: transparent;
+}
+body {
+  padding: 50px;
+  background: linear-gradient(180deg, rgba(0, 168, 132, 1) 15%, #f0f2f5 15%);
+}
+.container-qr strong {
+  margin-inline: 5px;
+}
+.container-qr p {
+  margin-block: 25px;
+}
+.container-qr svg {
+  display: inline;
+  margin-inline: 5px;
+}
 
 #qrcode {
-  width: 300px;
+  width: 250px;
 
-  height: 300px;
-  margin: 50px auto;
+  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
