@@ -36,7 +36,7 @@ async function connectToWhatsApp({ uuid, onConnect, onQR }) {
   );
 
   const sock = makeWASocket({
-    printQRInTerminal: false,
+    printQRInTerminal: true,
     auth: {
       creds: state.creds,
       keys: makeCacheableSignalKeyStore(state.keys, logger),
@@ -86,7 +86,7 @@ async function connectToWhatsApp({ uuid, onConnect, onQR }) {
         recursive: true,
         force: true,
       });
-      sock.close();
+      // sock.close();
     },
   };
 }

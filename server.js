@@ -1,6 +1,6 @@
 const connectToWhatsApp = require("./src/baileys");
 const jidWADomain = require("@whiskeysockets/baileys").S_WHATSAPP_NET;
-
+const crypto = require("crypto");
 const path = require("path");
 
 const fastify = require("fastify")({ logger: false });
@@ -35,17 +35,21 @@ fastify.post("/bulk-messages", schema, async function (request, reply) {
     // sendMessages(numbers, message, clientQueue[clientId], (res) => {
     //   if (res) reply.send({ data: "Opa deu certo!" });
     // });
+    console.log(clientId, clientQueue);
     clientQueue[clientId].sendMessage(numbers[0] + jidWADomain, message);
   }
 });
 
 fastify.get("/qr", async function (request, reply) {
+  console.log("---------------------------");
   const clientUuid = crypto.randomUUID();
-
-  clientQueue[clientUuid] = connectToWhatsApp({
+  console.log(crypto.randomUUID);
+  console.log(clientUuid);
+  const config = {
+    uuid: clientUuid,
     onConnect: () => {
       console.log("Client is authenticated");
-      reply.raw.write(`data: ${JSON.stringify({ type: "authenticated" })}\n\n`);
+      reply.raw.write(`data: ${JSON.stringify({ type: "ready" })}\n\n`);
     },
     onQR: (qr) => {
       reply.raw.write(
@@ -56,7 +60,11 @@ fastify.get("/qr", async function (request, reply) {
     onClose: () => {
       reply.raw.write(`data: ${JSON.stringify({ type: "close" })}\n\n`);
     },
-  });
+  };
+  console.log(config);
+  console.log("---------------------------");
+
+  clientQueue[clientUuid] = connectToWhatsApp(config);
 
   const headers = {
     "Content-Type": "text/event-stream",
@@ -67,8 +75,10 @@ fastify.get("/qr", async function (request, reply) {
 
   reply.raw.on("close", () => {
     console.log("Connection closed");
-    clientQueue[clientUuid].close();
-    delete clientQueue[clientUuid];
+    try {
+      clientQueue[clientUuid]?.close();
+      delete clientQueue[clientUuid];
+    } catch {}
   });
 
   try {

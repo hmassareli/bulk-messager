@@ -4,7 +4,8 @@
   "description": "A simple Node app built on fastify, instantly up and running. Built to be remixed on Glitch.com.",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "serve": "node server.js"
   },
   "dependencies": {
     "@fastify/cookie": "^9.3.1",
