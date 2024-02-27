@@ -114,27 +114,31 @@
             </p>
 
             <div
-              className="w-full h-[200px] overflow-auto flex items-start content-start gap-2 flex-wrap mt-4 input-message rounded-t-lg p-4 border max-w-full"
+              className="w-full h-[200px] content-start mt-4 input-message rounded-t-lg p-4 border max-w-full"
             >
-              ${validatedNumbers
-                ? validatedNumbers.map((number, index) => {
-                    return html`<${NumberTag}
-                      removeNumber=${removeNumber}
-                      number=${number}
-                      key=${index}
-                    />`;
-                  })
-                : null}
-              <input
-                type="text"
-                placeholder=${validatedNumbers.length
-                  ? ""
-                  : "Números separados por vários números, espaço ou quebra de linha"}
-                value=${numbersString}
-                onkeyup=${onNumbersChange}
-                onpaste=${handlePaste}
-                className="flex-1 rounded-t-lg p-1 border-0 max-w-full"
-              />
+              <label
+                className="flex-1 flex items-start overflow-auto cursor-text gap-2 flex-wrap content-start h-full"
+              >
+                ${validatedNumbers
+                  ? validatedNumbers.map((number, index) => {
+                      return html`<${NumberTag}
+                        removeNumber=${removeNumber}
+                        number=${number}
+                        key=${index}
+                      />`;
+                    })
+                  : null}
+                <input
+                  type="text"
+                  placeholder=${validatedNumbers.length
+                    ? ""
+                    : "Números separados por vários números, espaço ou quebra de linha"}
+                  value=${numbersString}
+                  onkeyup=${onNumbersChange}
+                  onpaste=${handlePaste}
+                  className="flex-1 rounded-t-lg p-1 border-0 max-w-full"
+                />
+              </label>
             </div>
             <textarea
               placeholder="Insira a mensagem a ser enviada"
