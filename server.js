@@ -2,9 +2,21 @@ const connectToWhatsApp = require("./src/baileys");
 const jidWADomain = require("@whiskeysockets/baileys").S_WHATSAPP_NET;
 const crypto = require("crypto");
 const path = require("path");
+const fs = require("fs");
 
 const fastify = require("fastify")({ logger: false });
 
+const sendMessageWTyping = async (msg, jid) => {
+  await sock.presenceSubscribe(jid);
+  await delay(500);
+
+  await sock.sendPresenceUpdate("composing", jid);
+  await delay(2000);
+
+  await sock.sendPresenceUpdate("paused", jid);
+
+  await sock.sendMessage(jid, msg);
+};
 fastify.register(require("@fastify/static"), {
   root: path.join(__dirname, "public"),
   prefix: "/", // optional: default '/'
@@ -34,18 +46,21 @@ fastify.post("/bulk-messages", schema, async function (request, reply) {
     const { numbers, message, clientId } = request.body;
     console.log(clientId, clientQueue);
     const client = clientQueue[clientId];
-    client.sock.sendMessage(numbers[0] + jidWADomain, { text: message });
-    console.log(
-      client,
-      clientQueue[clientId],
-      JSON.stringify(client) + "EITA PERAI NÂO TEM NADAAAAAAAAAA"
-    );
+    client.sendMessage(numbers[0] + jidWADomain, { text: message });
+
     // client.sendMessage(numbers[0] + jidWADomain, message);
     reply.send({ data: "Opa deu certo!" });
   }
 });
 
 fastify.get("/qr", async function (request, reply) {
+  const headers = {
+    "Content-Type": "text/event-stream",
+    Connection: "keep-alive",
+    "Cache-Control": "no-cache",
+  };
+  reply.raw.writeHead(200, headers);
+
   console.log("---------------------------");
   const clientUuid = crypto.randomUUID();
   console.log(crypto.randomUUID);
@@ -74,19 +89,18 @@ fastify.get("/qr", async function (request, reply) {
   clientQueue[clientUuid] = await connectToWhatsApp(config);
   console.log(JSON.stringify(clientQueue) + " ---_______________------ ");
 
-  const headers = {
-    "Content-Type": "text/event-stream",
-    Connection: "keep-alive",
-    "Cache-Control": "no-cache",
-  };
-  reply.raw.writeHead(200, headers);
-
   reply.raw.on("close", () => {
     console.log("Connection closed");
     try {
-      // clientQueue[clientUuid]?.close();
+      fs.rmSync(path.join("baileys_auth_info", uuid), {
+        recursive: true,
+        force: true,
+      });
+      sock.close();
       delete clientQueue[clientUuid];
-    } catch {}
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   try {
