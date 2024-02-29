@@ -1,10 +1,10 @@
+import crypto from "crypto";
 import express from "express";
 import WebSocket from "ws";
 import { wrapBaileysSocket } from "./baileys";
-import crypto from "crypto";
-import path from "path";
 
 const app = express();
+app.use(express.static("public"));
 const wss = new WebSocket.Server({ noServer: true });
 
 interface WSMessageType {
@@ -15,10 +15,6 @@ interface WSMessageType {
 const wsSendMessage = (ws: WebSocket, message: WSMessageType) => {
   ws.send(JSON.stringify(message));
 };
-
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
-});
 
 wss.on("connection", async (wsClient) => {
   const sessionId = crypto.randomUUID();

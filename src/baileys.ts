@@ -1,16 +1,16 @@
+import { Boom } from "@hapi/boom";
 import makeWASocket, {
-  useMultiFileAuthState,
-  makeCacheableSignalKeyStore,
   ConnectionState,
-  delay,
-  S_WHATSAPP_NET,
   DisconnectReason,
+  S_WHATSAPP_NET,
+  delay,
+  makeCacheableSignalKeyStore,
+  useMultiFileAuthState,
 } from "@whiskeysockets/baileys";
 import MAIN_LOGGER from "@whiskeysockets/baileys/lib/Utils/logger";
-import WebSocket from "ws";
 import fs from "fs";
 import path from "path";
-import { Boom } from "@hapi/boom";
+import WebSocket from "ws";
 
 const logger = MAIN_LOGGER.child({});
 logger.level = "trace";
@@ -52,6 +52,7 @@ export const wrapBaileysSocket = async () => {
           recursive: true,
           force: true,
         });
+        waSock.logout();
       } catch (err) {
         console.log(err);
       }
