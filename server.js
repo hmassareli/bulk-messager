@@ -32,11 +32,16 @@ const schema = {
 fastify.post("/bulk-messages", schema, async function (request, reply) {
   if (request.body) {
     const { numbers, message, clientId } = request.body;
-    // sendMessages(numbers, message, clientQueue[clientId], (res) => {
-    //   if (res) reply.send({ data: "Opa deu certo!" });
-    // });
     console.log(clientId, clientQueue);
-    clientQueue[clientId].sendMessage(numbers[0] + jidWADomain, message);
+    const client = clientQueue[clientId];
+    client.sock.sendMessage(numbers[0] + jidWADomain, { text: message });
+    console.log(
+      client,
+      clientQueue[clientId],
+      JSON.stringify(client) + "EITA PERAI NÂO TEM NADAAAAAAAAAA"
+    );
+    // client.sendMessage(numbers[0] + jidWADomain, message);
+    reply.send({ data: "Opa deu certo!" });
   }
 });
 
@@ -49,7 +54,9 @@ fastify.get("/qr", async function (request, reply) {
     uuid: clientUuid,
     onConnect: () => {
       console.log("Client is authenticated");
-      reply.raw.write(`data: ${JSON.stringify({ type: "ready" })}\n\n`);
+      reply.raw.write(
+        `data: ${JSON.stringify({ type: "ready", id: clientUuid })}\n\n`
+      );
     },
     onQR: (qr) => {
       reply.raw.write(
@@ -64,7 +71,8 @@ fastify.get("/qr", async function (request, reply) {
   console.log(config);
   console.log("---------------------------");
 
-  clientQueue[clientUuid] = connectToWhatsApp(config);
+  clientQueue[clientUuid] = await connectToWhatsApp(config);
+  console.log(JSON.stringify(clientQueue) + " ---_______________------ ");
 
   const headers = {
     "Content-Type": "text/event-stream",
@@ -76,7 +84,7 @@ fastify.get("/qr", async function (request, reply) {
   reply.raw.on("close", () => {
     console.log("Connection closed");
     try {
-      clientQueue[clientUuid]?.close();
+      // clientQueue[clientUuid]?.close();
       delete clientQueue[clientUuid];
     } catch {}
   });

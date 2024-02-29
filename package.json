@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "description": "A simple Node app built on fastify, instantly up and running. Built to be remixed on Glitch.com.",
   "main": "server.js",
+  "nodemonConfig": {
+    "ignore": [
+      "baileys_auth_info/*"
+    ]
+  },
   "scripts": {
     "start": "nodemon server.js",
     "serve": "node server.js"
@@ -12,7 +17,7 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/static": "^6.10.2",
     "@fastify/view": "^8.0.0",
-    "@whiskeysockets/baileys": "^6.6.0",
+    "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
     "axios": "^0.27.2",
     "detectlanguage": "^2.1.0",
     "fastify": "^4.21.0",
