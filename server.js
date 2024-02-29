@@ -66,6 +66,7 @@ fastify.get("/qr", async function (request, reply) {
   console.log(crypto.randomUUID);
   console.log(clientUuid);
   const config = {
+    request,
     uuid: clientUuid,
     onConnect: () => {
       console.log("Client is authenticated");
@@ -82,26 +83,24 @@ fastify.get("/qr", async function (request, reply) {
     onClose: () => {
       reply.raw.write(`data: ${JSON.stringify({ type: "close" })}\n\n`);
     },
+    onRequestClose: () => {
+      console.log("Connection closed");
+      try {
+        fs.rmSync(path.join("baileys_auth_info", clientUuid), {
+          recursive: true,
+          force: true,
+        });
+        delete clientQueue[clientUuid];
+      } catch (err) {
+        console.log(err);
+      }
+    },
   };
   console.log(config);
   console.log("---------------------------");
 
   clientQueue[clientUuid] = await connectToWhatsApp(config);
   console.log(JSON.stringify(clientQueue) + " ---_______________------ ");
-
-  reply.raw.on("close", () => {
-    console.log("Connection closed");
-    try {
-      fs.rmSync(path.join("baileys_auth_info", uuid), {
-        recursive: true,
-        force: true,
-      });
-      sock.close();
-      delete clientQueue[clientUuid];
-    } catch (err) {
-      console.log(err);
-    }
-  });
 
   try {
   } catch (err) {

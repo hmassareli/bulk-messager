@@ -20,10 +20,18 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * @param {() => string} onConnect - Callback for when connected
  * @param {(qr: string) => string} onQR - Callback for scanning QR code
  */
-async function connectToWhatsApp({ uuid, onQR, onConnect }) {
+async function connectToWhatsApp({
+  uuid,
+  onQR,
+  onConnect,
+  onRequestClose,
+  request,
+}) {
   const { state, saveCreds } = await useMultiFileAuthState(
     "baileys_auth_info/" + uuid
   );
+
+  request.raw.on("close", onRequestClose);
 
   const sock = makeWASocket({
     printQRInTerminal: false,
