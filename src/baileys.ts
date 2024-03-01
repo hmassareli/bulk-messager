@@ -120,7 +120,7 @@ export const wrapBaileysSocket = async () => {
           return newBaileys;
         } else {
           waSock.ev.off("connection.update", listener);
-          throw error;
+          console.log("Connection closed. Goodbye!");
         }
       }
     };
