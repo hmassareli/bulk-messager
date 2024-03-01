@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>title</title>
+    <title>Bulk Messager</title>
     <script type="importmap">
       {
         "imports": {
@@ -50,7 +50,13 @@
         const removeNumber = (number) => {
           setValidatedNumbers((prev) => prev.filter((num) => num !== number));
         };
-
+        const handleFocusOut = () => {
+          setValidatedNumbers((prev) => [
+            ...prev,
+            ...getFormattedNumbers(numbersString, validatedNumbers).numbers,
+          ]);
+          setNumbersString("");
+        };
         const handlePaste = (e) => {
           e.preventDefault();
           const text = e.clipboardData.getData("text/plain");
@@ -120,6 +126,7 @@
                     })
                   : null}
                 <input
+                  onfocusout=${handleFocusOut}
                   type="text"
                   placeholder=${validatedNumbers.length
                     ? ""
@@ -164,7 +171,18 @@
           );
         }
         useEffect(() => {
-          socket = new WebSocket("ws://localhost:3000");
+          const getWebSocketUrl = () => {
+            if (window.location.hostname === "localhost") {
+              // Use localhost URL
+              return "ws://localhost:3000";
+            } else {
+              // Use current directory on the server
+              const protocol =
+                window.location.protocol === "https:" ? "wss" : "ws";
+              return `${protocol}://${window.location.host}`;
+            }
+          };
+          socket = new WebSocket(getWebSocketUrl());
           console.log("Component mounting");
           const qrDiv = document.getElementById("qrcode");
           qrDiv.classList.add("skeleton");

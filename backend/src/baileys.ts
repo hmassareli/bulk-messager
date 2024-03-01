@@ -48,11 +48,11 @@ export const wrapBaileysSocket = async () => {
     // SERVER
     wsClient.onclose = () => {
       try {
+        waSock.logout();
         fs.rmSync(path.join("baileys_auth_info", sessionId), {
           recursive: true,
           force: true,
         });
-        waSock.logout();
       } catch (err) {
         console.log(err);
       }
@@ -120,7 +120,7 @@ export const wrapBaileysSocket = async () => {
           return newBaileys;
         } else {
           waSock.ev.off("connection.update", listener);
-          throw error;
+          console.log("Connection closed. Goodbye!");
         }
       }
     };
