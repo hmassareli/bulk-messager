@@ -25,13 +25,10 @@ export function App() {
             <p>Aponte seu celular para esta tela para capturar o QR code.</p>
           </div>
 
-        <QRCodeBlock
-          done
-          oQRCode={oQRCode || "==@#CEf@#Rf$G$%H#344@#2f323G@g3G@rsdF23F23fg"}
-        />
-      </div>
+          <QRCodeBlock oQRCode={oQRCode} />
+        </div>
 
-      <MessagerForm isReady={isReady} onSendMessages={sendMessage} />
+        <MessagerForm isReady={isReady} onSendMessages={sendMessage} />
       </div>
     </div>
   );

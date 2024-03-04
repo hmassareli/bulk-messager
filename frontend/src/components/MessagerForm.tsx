@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { PhoneNumbersPill } from "./PhoneNumbersPill";
-import { getFormattedNumbers } from "../utils/phone-numbers";
+import { getFormattedNumbers } from "../utils/phone-numbers-util";
 import { SendMessageProps } from "../hooks/useBaileysSocket";
 
 export interface MessagerFormProps {
@@ -10,8 +10,9 @@ export interface MessagerFormProps {
 
 export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
   const [validatedNumbers, setValidatedNumbers] = useState<string[]>([]);
-  const [numbersString, setNumbersString] = useState<string>("");
-  const [messageToSend, setMessageToSend] = useState<string>("");
+  const [numbersString, setNumbersString] = useState("");
+  const [messageToSend, setMessageToSend] = useState("");
+  const [isNumberInputFocused, setIsNumberInputFocused] = useState(false);
 
   const removeNumber = (number: string) => {
     const newNumbers = validatedNumbers.filter((n) => n !== number);
@@ -36,16 +37,18 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
     const eraseKeys = ["Backspace"];
 
     setNumbersString(numbersString);
-    console.log(validatedNumbers);
 
     if (submitKeys.includes(e.key) || submitKeys.includes(e.code)) {
       const numbers = getFormattedNumbers(numbersString, validatedNumbers);
 
-      setValidatedNumbers((prev) => [...prev, ...numbers]);
+      setValidatedNumbers(numbers);
       setNumbersString("");
     }
 
-    if (eraseKeys.includes(e.key) || eraseKeys.includes(e.code)) {
+    if (
+      eraseKeys.includes(e.key) ||
+      (eraseKeys.includes(e.code) && numbersString === "")
+    ) {
       setValidatedNumbers((prev) => prev.slice(0, validatedNumbers.length - 1));
     }
   };
@@ -69,6 +72,11 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
         bg-neutral-100
         resize-none content-start
         border border-slate-800 rounded-t-lg
+        ${
+          isNumberInputFocused
+            ? "border-opacity-100 shadow-sm z-10"
+            : "border-opacity-50"
+        } 
         `}
       >
         <label className="flex flex-wrap items-stretch content-start flex-1 h-full gap-2 overflow-auto cursor-text">
@@ -93,6 +101,8 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
             value={numbersString}
             onKeyUp={handleNumbersChange}
             onPaste={handlePaste}
+            onFocus={() => setIsNumberInputFocused(true)}
+            onBlur={() => setIsNumberInputFocused(false)}
             className="flex-1 max-w-full p-1 bg-transparent border-0 outline-none"
           />
         </label>
