@@ -1,6 +1,7 @@
 import { QRCodeSVG } from "qrcode.react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { Skeleton } from "./Skeleton";
 
 export interface QRCodeBlockProps {
   oQRCode?: string;
@@ -27,10 +28,9 @@ export function QRCodeBlock({ oQRCode, done }: QRCodeBlockProps) {
     );
   }
 
-  // TODO: Use skeleton class instead of animate-pulse
   return (
-    <div className="size-64 animate-pulse bg-zinc-400 text-white rounded-lg flex items-center justify-center">
-      Carregando QR Code...
-    </div>
+    <Skeleton className="flex items-center self-center justify-center font-medium text-gray-500 rounded-lg size-64 aspect-square">
+      Carregando...
+    </Skeleton>
   );
 }
