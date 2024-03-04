@@ -58,15 +58,7 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
   };
 
   return (
-    <div className="flex w-full mt-14 flex-col items-start">
-      <p className="text-large text-left font-semibold">
-        Disparo de mensagens em massa
-      </p>
-      <p className="text-left">
-        Insira as informações necessárias e clique em enviar mensagens
-      </p>
-      <div className="w-full bg-neutral-100 border-slate-800 border-opacity-50 resize-none h-[200px] content-start mt-6 input-message rounded-t-lg p-4 border max-w-full">
-        <label className="flex-1 flex items-start overflow-auto cursor-text gap-2 flex-wrap content-start h-full">
+      <div className="mb-4 prose prose-slate max-w-none">
           {validatedNumbers
             ? validatedNumbers.map((number, index) => {
                 return (

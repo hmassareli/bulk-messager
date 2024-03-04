@@ -7,11 +7,7 @@ export function App() {
   const { isReady, sendMessage, oQRCode } = useBaileysSocket();
 
   return (
-    <div className="bg-[#F9F9F9] p-14 rounded-md shadow-lg w-[1000px] m-auto ">
-      <div className="flex w-full m-auto items-center  justify-between">
-        <div className="container-qr">
-          <p>Abra o WhatsApp no seu celular.</p>
-          <p>
+        <div className="flex flex-col items-center justify-between w-full m-auto prose prose-slate max-w-none md:flex-row">
             Toque em
             <strong>
               Mais opções
