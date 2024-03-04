@@ -58,7 +58,20 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
   };
 
   return (
+    <div className="flex flex-col items-start w-full mt-14">
       <div className="mb-4 prose prose-slate max-w-none">
+        <h3 className="mt-0">Disparo de mensagens em massa</h3>
+        <p>Insira as informações necessárias e clique em enviar mensagens</p>
+      </div>
+      <div
+        className={`
+        w-full max-w-full h-[200px] p-4
+        bg-neutral-100
+        resize-none content-start
+        border border-slate-800 rounded-t-lg
+        `}
+      >
+        <label className="flex flex-wrap items-stretch content-start flex-1 h-full gap-2 overflow-auto cursor-text">
           {validatedNumbers
             ? validatedNumbers.map((number, index) => {
                 return (
@@ -80,7 +93,7 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
             value={numbersString}
             onKeyUp={handleNumbersChange}
             onPaste={handlePaste}
-            className="flex-1 rounded-t-lg p-1 border-0 max-w-full bg-transparent"
+            className="flex-1 max-w-full p-1 bg-transparent border-0 outline-none"
           />
         </label>
       </div>
@@ -88,10 +101,18 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
         value={messageToSend}
         onInput={(e: any) => setMessageToSend(e.target?.value)}
         placeholder="Insira a mensagem a ser enviada"
-        className="bg-neutral-50 border-slate-800 border-opacity-50 resize-none w-full h-[200px] rounded-b-lg  border-t-0 p-4 border max-w-full"
+        className={`
+          outline-none
+          bg-neutral-50
+          border border-slate-800 border-opacity-50 border-t-0 shadow-none
+          focus:border-opacity-100 focus:shadow-sm focus:border-t focus:-mt-px focus:mb-px
+          w-full h-[200px]
+          resize-none 
+          rounded-b-lg p-4
+        `}
       ></textarea>
       <button
-        className="bg-[#1B965B] ml-auto hover:bg-blueDark disabled:bg-gray-500 text-white px-6 py-3 rounded-lg mt-6 font-semibold"
+        className="px-6 py-3 mt-6 ml-auto font-semibold text-white rounded-lg bg-whatsapp disabled:bg-gray-500"
         disabled={!isReady}
         onClick={handleSendMessage}
       >

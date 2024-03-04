@@ -8,13 +8,13 @@ export interface QRCodeBlockProps {
   done?: boolean;
 }
 
-export function QRCodeBlock({ oQRCode, done }: QRCodeBlockProps) {
+export function QRCodeBlock({ oQRCode, done = false }: QRCodeBlockProps) {
   if (oQRCode) {
     if (done) {
       return (
-        <div className="size-64  bg-zinc-400 rounded-lg flex items-center justify-center">
+        <div className="flex items-center justify-center rounded-lg size-64 aspect-square bg-zinc-400">
           <FontAwesomeIcon
-            className="text-whatsapp absolute bg-white rounded-full"
+            className="absolute bg-white rounded-full text-whatsapp"
             icon={faCheckCircle}
             size="10x"
           />
@@ -24,7 +24,7 @@ export function QRCodeBlock({ oQRCode, done }: QRCodeBlockProps) {
     }
 
     return (
-      <QRCodeSVG className="size-64 rounded-lg" value={oQRCode} level="H" />
+      <QRCodeSVG className="rounded-lg size-64" value={oQRCode} level="H" />
     );
   }
 
