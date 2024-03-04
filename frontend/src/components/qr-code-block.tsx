@@ -5,12 +5,12 @@ import { SkeletonLoader } from "./skeleton-loader";
 
 export interface QRCodeBlockProps {
   oQRCode?: string;
-  done?: boolean;
+  isReady: boolean;
 }
 
-export function QRCodeBlock({ oQRCode, done = false }: QRCodeBlockProps) {
+export function QRCodeBlock({ oQRCode, isReady = false }: QRCodeBlockProps) {
   if (oQRCode) {
-    if (done) {
+    if (isReady) {
       return (
         <div className="flex items-center justify-center rounded-lg size-64 aspect-square bg-zinc-400">
           <FontAwesomeIcon
@@ -18,7 +18,11 @@ export function QRCodeBlock({ oQRCode, done = false }: QRCodeBlockProps) {
             icon={faCheckCircle}
             size="10x"
           />
-          <QRCodeSVG className="size-full" value={oQRCode} level="H" />
+          <QRCodeSVG
+            className="rounded-lg size-full"
+            value={oQRCode}
+            level="H"
+          />
         </div>
       );
     }
