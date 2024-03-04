@@ -1,16 +1,17 @@
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-interface PhoneNumbersPillProps {
+export interface PhoneNumberPillProps {
   key: any;
   number: string;
   removeNumber: (number: string) => void;
 }
-export function PhoneNumbersPill({
+
+export function PhoneNumberPill({
   key,
   number,
   removeNumber,
-}: PhoneNumbersPillProps) {
+}: PhoneNumberPillProps) {
   return (
     <div
       key={key}

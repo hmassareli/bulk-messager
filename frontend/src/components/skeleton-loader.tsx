@@ -1,10 +1,10 @@
 import { HTMLAttributes, ReactNode } from "preact/compat";
 
-interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
+export interface SkeletonLoaderProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export function Skeleton({ children, ...props }: SkeletonProps) {
+export function SkeletonLoader({ children, ...props }: SkeletonLoaderProps) {
   const { className = "" } = props;
 
   return (

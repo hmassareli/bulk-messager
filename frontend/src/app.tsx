@@ -1,6 +1,6 @@
-import { MessagerForm } from "./components/MessagerForm";
-import { useBaileysSocket } from "./hooks/useBaileysSocket";
-import { QRCodeBlock } from "./components/QRCodeBlock";
+import { MessagerForm } from "./components/message-form";
+import { useBaileysSocket } from "./hooks/use-baileys-socket";
+import { QRCodeBlock } from "./components/qr-code-block";
 import { ContextMenuIcon } from "./components/svg-icons/context-menu-icon";
 import { ConfigIcon } from "./components/svg-icons/config-icon";
 

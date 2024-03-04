@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
-import { PhoneNumbersPill } from "./PhoneNumbersPill";
+import { PhoneNumberPill } from "./phone-number-pill";
 import { getFormattedNumbers } from "../utils/phone-numbers-util";
-import { SendMessageProps } from "../hooks/useBaileysSocket";
+import { SendMessageProps } from "../hooks/use-baileys-socket";
 
 export interface MessagerFormProps {
   isReady: boolean;
@@ -33,7 +33,7 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
 
   const handleNumbersChange = (e: KeyboardEvent) => {
     const numbersString = (e.target as HTMLInputElement).value;
-    const submitKeys = ["Enter", "Tab", "NumpadEnter", " ", "Space"];
+    const submitKeys = ["Enter", "Tab", "NumpadEnter", "Space"];
     const eraseKeys = ["Backspace"];
 
     setNumbersString(numbersString);
@@ -83,7 +83,7 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
           {validatedNumbers
             ? validatedNumbers.map((number, index) => {
                 return (
-                  <PhoneNumbersPill
+                  <PhoneNumberPill
                     removeNumber={removeNumber}
                     number={number}
                     key={index}

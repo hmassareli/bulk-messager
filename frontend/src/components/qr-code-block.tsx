@@ -1,7 +1,7 @@
 import { QRCodeSVG } from "qrcode.react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { Skeleton } from "./Skeleton";
+import { SkeletonLoader } from "./skeleton-loader";
 
 export interface QRCodeBlockProps {
   oQRCode?: string;
@@ -29,8 +29,8 @@ export function QRCodeBlock({ oQRCode, done = false }: QRCodeBlockProps) {
   }
 
   return (
-    <Skeleton className="flex items-center self-center justify-center font-medium text-gray-500 rounded-lg size-64 aspect-square">
+    <SkeletonLoader className="flex items-center self-center justify-center font-medium text-gray-500 rounded-lg size-64 aspect-square">
       Carregando...
-    </Skeleton>
+    </SkeletonLoader>
   );
 }
