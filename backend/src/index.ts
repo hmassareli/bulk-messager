@@ -34,7 +34,8 @@ wss.on("connection", async (wsClient) => {
 
 // Start server
 const server = app.listen(3000, () => {
-  console.log("Listening on port 3000");
+  console.log("\x1b[32mListening\x1b[0m on port \x1b[34m3000\x1b[0m");
+  console.log("\x1b[32mOpen at \x1b[34mhttp://localhost:3000/\x1b[0m");
 });
 
 server.on("upgrade", (request, socket, head) => {
