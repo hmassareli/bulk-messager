@@ -64,7 +64,7 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
     <div className="flex flex-col items-start w-full mt-14">
       <div className="mb-4 prose prose-slate max-w-none">
         <h3 className="mt-0">Disparo de mensagens em massa</h3>
-        <p>Insira as informações necessárias e clique em enviar mensagens</p>
+        <p>Insira as informações necessárias e clique em "enviar para todos"</p>
       </div>
       <div
         className={`
@@ -96,7 +96,7 @@ export function MessagerForm({ isReady, onSendMessages }: MessagerFormProps) {
             placeholder={
               validatedNumbers.length
                 ? ""
-                : "Números separados por vários números, espaço ou quebra de linha"
+                : "Insira os números que receberão a mensagem. Obs: Separe cada número usando virgula, espaço ou quebra de linha."
             }
             value={numbersString}
             onKeyUp={handleNumbersChange}

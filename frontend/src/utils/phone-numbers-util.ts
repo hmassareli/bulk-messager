@@ -16,11 +16,16 @@ const nonRepeatableOrEmptyConcat = (
 };
 
 const splitRegex = /[ ,\n\t\r]+/g;
+
 const getOnlyDigits = (number: string) => number.replace(/\D+/g, "");
+
 const emptyFilter = (number: string) => number.length > 0;
+
 export const sanitizeNumbersToArray = (numbersString: string): string[] => {
   return numbersString
     .trim()
+    .replace(/\) */g, "")
+    .replace(/ *\(/g, "")
     .split(splitRegex)
     .map(getOnlyDigits)
     .filter(emptyFilter)
@@ -32,6 +37,7 @@ export const getFormattedNumbers = (
   currentNumbers: string[]
 ) => {
   const sanitizedNumbers = sanitizeNumbersToArray(numbersString);
+  console.log(sanitizedNumbers);
   const result = nonRepeatableOrEmptyConcat(currentNumbers, sanitizedNumbers);
 
   return result;
