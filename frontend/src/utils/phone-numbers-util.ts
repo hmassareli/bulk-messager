@@ -25,7 +25,6 @@ export const sanitizeNumbersToArray = (numbersString: string): string[] => {
   return numbersString
     .trim()
     .replace(/\) */g, "")
-    .replace(/ *\(/g, "")
     .split(splitRegex)
     .map(getOnlyDigits)
     .filter(emptyFilter)
