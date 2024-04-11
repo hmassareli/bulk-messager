@@ -1,8 +1,6 @@
-<center>
-
+<p align="center">
 <img src="./docs/logo.svg" width="300"/>
-
-</center>
+</p>
 
 # Whatsapp Bulk Messenger
 
