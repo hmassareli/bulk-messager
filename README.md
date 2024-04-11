@@ -12,7 +12,7 @@
 
 You can check it online now! Give it a try at:
 
-- https://bulk-messager.onrender.com
+👉 https://bulk-messager.onrender.com
 
 ## Build & Serve
 
@@ -33,12 +33,10 @@ cd ..
 ./serve.sh
 ```
 
+It will build the frontend folder inside the backend to be served, and then will start the server using `ts-node` on the port 3000.
+
 > [!WARNING]
 > If you copy/paste to ZSH, it may argue about "#" being a "bad pattern", just remove the comments and run again.
-
-It will build the frontend folder inside the backend to be served, and then will start the server using `ts-node` on the port 3000
-
-- http://localhost:3000
 
 ## Development
 
@@ -61,10 +59,7 @@ cd ..
 
 I will run the backend behind nodemon at the port 3000, together with the websocket on the `ws` protocol.
 And the frontend will be served at the port 5173.
-http://localhost:3000
-ws://localhost:3000
-http://localhost:5173
 
 ## Contribute
 
-Feel free to open an issue or send a pull request!
+Feel free to open an issue or send a pull request! 🥳🎉
